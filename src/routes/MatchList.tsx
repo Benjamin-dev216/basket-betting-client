@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useWebSocket } from "../context/WebSocketProvider";
+import { useEffect } from "react";
+import axios from "axios";
 
 interface Match {
   matchId: string;
@@ -9,16 +11,17 @@ interface Match {
   teams: {
     home: {
       name: string;
-      kitColors?: String[];
+      kitColor?: String[];
     };
     away: {
       name: string;
-      kitColors?: String[];
+      kitColor?: String[];
     };
   };
   numericStats?: {
     T?: [number, number];
   };
+  pc?: number;
 }
 
 interface GroupedMatches {
@@ -35,7 +38,7 @@ const groupByCompetition = (matches: Match[]): GroupedMatches => {
 };
 
 const MatchList = () => {
-  const { matchList, selectMatch } = useWebSocket();
+  const { matchList, selectMatch, setMatchList } = useWebSocket();
   const navigate = useNavigate();
   const groupedMatches = groupByCompetition(matchList);
 
@@ -44,16 +47,70 @@ const MatchList = () => {
     navigate("/market");
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await axios.get("/inplay-basket");
+
+      const tempMatchList: Match[] = [];
+      const tempEvents = Object.values(data.events) as Array<{
+        info: { id: string; league: string; period: String };
+        status: string;
+        timer: string;
+        team_info: {
+          home: { name: string; kit_color?: string; score?: number };
+          away: { name: string; kit_color?: string; score?: number };
+        };
+        pc: number;
+      }>;
+      tempEvents.map((match) => {
+        const pc =
+          match.info.period[0] === "O" ? 5 : Number(match.info.period[0]);
+        const tempMatch = {
+          matchId: match.info.id,
+          competition: match.info.league,
+          status: match.status,
+          timer: match.timer,
+          teams: {
+            home: {
+              name: match.team_info.home.name,
+              kitColors: match.team_info.home.kit_color?.split(",") ?? [],
+            },
+            away: {
+              name: match.team_info.away.name,
+              kitColors: match.team_info.away.kit_color?.split(",") ?? [],
+            },
+          },
+          pc: pc,
+          numericStats: {
+            T: [
+              Number(match.team_info.home.score) ?? 0,
+              Number(match.team_info.away.score) ?? 0,
+            ] as [number, number],
+          },
+        };
+        tempMatchList.push(tempMatch);
+      });
+      setMatchList(tempMatchList);
+    };
+    fetchData();
+  }, []);
+
   return (
-    <div className="p-4 space-y-6">
-      {Object.entries(groupedMatches).map(([competition, matches]) => (
-        <CompetitionBlock
-          key={competition}
-          title={competition}
-          matches={matches}
-          onMatchClick={handleSelect}
-        />
-      ))}
+    <div className="p-4 space-y-6 w-full max-w-4xl mx-auto">
+      {Object.keys(groupedMatches).length > 0 ? (
+        Object.entries(groupedMatches).map(([competition, matches]) => (
+          <CompetitionBlock
+            key={competition}
+            title={competition}
+            matches={matches}
+            onMatchClick={handleSelect}
+          />
+        ))
+      ) : (
+        <div className="text-center text-gray-400 py-10 h-screen">
+          <p className="text-lg">Match List Loading</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -68,10 +125,10 @@ const CompetitionBlock = ({
   onMatchClick: (matchId: string) => void;
 }) => (
   <div>
-    <div className="bg-neutral-700 text-white font-bold px-4 py-2 rounded-t-md uppercase tracking-wide text-sm shadow">
+    <div className="bg-[#4c4c4c] text-white font-bold px-4 py-2 rounded-t-md uppercase tracking-wide text-sm shadow ">
       {title}
     </div>
-    <div className="space-y-2">
+    <div className="space-y-1">
       {matches.map((match) => (
         <MatchCard
           key={match.matchId}
@@ -92,16 +149,27 @@ const MatchCard = ({
 }) => (
   <div
     onClick={onClick}
-    className="cursor-pointer bg-neutral-800 text-white rounded-xl p-4 shadow hover:shadow-lg transition"
+    className="cursor-pointer bg-[#383838] text-white p-4 shadow hover:shadow-lg transition"
   >
-    <TeamRow team={match.teams.home} score={match.numericStats?.T?.[0]} />
-    <div className="my-1" />
-    <TeamRow team={match.teams.away} score={match.numericStats?.T?.[1]} />
-    {match.status || match.timer ? (
-      <div className="mt-2 text-right text-xs text-gray-400">
-        {match.status} {match.timer && `• ${match.timer}`}
+    <div className="flex gap-4 items-start">
+      {/* Left: Quarter Info */}
+      <div className="text-sm font-semibold mt-1 min-w-[32px]">
+        {"Q" + (match.pc === 5 ? "T" : match.pc)}
       </div>
-    ) : null}
+
+      {/* Right: Teams + Timer */}
+      <div className="flex-1">
+        <TeamRow team={match.teams.home} score={match.numericStats?.T?.[0]} />
+        <div className="my-1" />
+        <TeamRow team={match.teams.away} score={match.numericStats?.T?.[1]} />
+
+        {match.status || match.timer ? (
+          <div className="mt-2 text-right text-xs text-gray-400">
+            {match.status} {match.timer && `• ${match.timer}`}
+          </div>
+        ) : null}
+      </div>
+    </div>
   </div>
 );
 
@@ -112,9 +180,9 @@ const TeamRow = ({
   team: { name: string; kitColors?: String[] };
   score?: number;
 }) => {
-  const primaryColor = team.kitColors?.[0].toString() || "#666";
+  const primaryColor = team.kitColors?.[0]?.toString() || "#666";
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center pr-6">
       <div className="flex items-center gap-2 min-w-0">
         <div
           className="w-3 h-5 rounded-sm"
@@ -122,7 +190,7 @@ const TeamRow = ({
         />
         <span className="truncate">{team.name}</span>
       </div>
-      <div className="text-xl font-bold">
+      <div className="bg-white/20 text-white text-sm font-bold p-1 w-[24px]">
         {typeof score === "number" ? score : 0}
       </div>
     </div>

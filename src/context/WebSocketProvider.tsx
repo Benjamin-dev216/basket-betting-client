@@ -4,6 +4,7 @@ import { Match } from "../types/match";
 interface WebSocketContextType {
   matchList: Match[];
   selectedMatch: Match | null;
+  setMatchList: (matches: Match[]) => void;
   selectMatch: (matchId: string) => void;
   sendMessage: (msg: any) => void;
 }
@@ -59,6 +60,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
               ...match,
               status: data.status ?? match.status,
               numericStats: data.numericStats ?? match.numericStats,
+              odds: data.odds,
             };
 
             // Avoid updating if nothing actually changed
@@ -70,14 +72,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       if (data.type === "odds") {
-        setMatchList((prevMatches) =>
-          prevMatches.map((match) =>
-            match.matchId === data.matchId
-              ? { ...match, odds: data.odds }
-              : match
-          )
-        );
-
         // Also update selectedMatch if it's the same matchId
         if (selectedMatch?.matchId === data.matchId) {
           setSelectedMatch((prev) =>
@@ -104,7 +98,13 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <WebSocketContext.Provider
-      value={{ matchList, selectedMatch, selectMatch, sendMessage }}
+      value={{
+        matchList,
+        selectedMatch,
+        setMatchList,
+        selectMatch,
+        sendMessage,
+      }}
     >
       {children}
     </WebSocketContext.Provider>
