@@ -1,16 +1,25 @@
-// src/App.tsx
-import React from "react";
-import MatchList from "./components/MatchList";
-import { useMatchContext } from "./context/MatchContext";
-import MarketPanel from "./components/MarketPanel";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import MatchList from "./routes/MatchList";
+import MarketPanel from "./routes/MarketPanel";
+import History from "./routes/History";
+import { WebSocketProvider } from "./context/WebSocketProvider";
+import "./App.css";
 
-const App: React.FC = () => {
-  const { selectedMatchId } = useMatchContext();
+const App = () => {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Sports Betting Platform</h1>
-      <div>{selectedMatchId ? <MarketPanel /> : <MatchList />}</div>
-    </div>
+    <WebSocketProvider>
+      <Router>
+        <nav className="flex gap-4 bg-gray-200 p-4">
+          <Link to="/">Matches</Link>
+          <Link to="/history">History</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<MatchList />} />
+          <Route path="/market" element={<MarketPanel />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </Router>
+    </WebSocketProvider>
   );
 };
 

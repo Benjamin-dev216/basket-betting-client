@@ -2,12 +2,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { MatchProvider } from "./context/MatchContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <MatchProvider>
-      <App />
-    </MatchProvider>
+    <App />
   </React.StrictMode>
 );
