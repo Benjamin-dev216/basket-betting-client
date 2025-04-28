@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useWebSocket } from "../context/WebSocketProvider";
 import { useEffect } from "react";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 interface Match {
   matchId: string;
@@ -22,6 +23,8 @@ interface Match {
     T?: [number, number];
   };
   pc?: number;
+  stp: number;
+  statsParsed?: any;
 }
 
 interface GroupedMatches {
@@ -63,8 +66,9 @@ const MatchList = () => {
         pc: number;
       }>;
       tempEvents.map((match) => {
-        const pc =
-          match.info.period[0] === "O" ? 5 : Number(match.info.period[0]);
+        const pc = !Number(match.info.period[0])
+          ? 5
+          : Number(match.info.period[0]);
         const tempMatch = {
           matchId: match.info.id,
           competition: match.info.league,
@@ -87,6 +91,7 @@ const MatchList = () => {
               Number(match.team_info.away.score) ?? 0,
             ] as [number, number],
           },
+          stp: 0, // Default value for stp
         };
         tempMatchList.push(tempMatch);
       });
@@ -96,7 +101,7 @@ const MatchList = () => {
   }, []);
 
   return (
-    <div className="p-4 space-y-6 w-full max-w-4xl mx-auto">
+    <div className="p-4 space-y-6 w-full max-w-4xl mx-auto min-h-[calc(100vh-112px)]">
       {Object.keys(groupedMatches).length > 0 ? (
         Object.entries(groupedMatches).map(([competition, matches]) => (
           <CompetitionBlock
@@ -107,8 +112,9 @@ const MatchList = () => {
           />
         ))
       ) : (
-        <div className="text-center text-gray-400 py-10 h-screen">
-          <p className="text-lg">Match List Loading</p>
+        <div className="text-center text-gray-400 py-10 min-h-[calc(100vh-112px)]">
+          <ClipLoader color="white" size={50} /> {/* Spinner component */}
+          <p className="text-lg mt-4">Loading Matches...</p>
         </div>
       )}
     </div>
@@ -154,7 +160,7 @@ const MatchCard = ({
     <div className="flex gap-4 items-start">
       {/* Left: Quarter Info */}
       <div className="text-sm font-semibold mt-1 min-w-[32px]">
-        {"Q" + (match.pc === 5 ? "T" : match.pc)}
+        {"Q" + (Number(match.pc) >= 5 ? "T" : match.pc)}
       </div>
 
       {/* Right: Teams + Timer */}
@@ -190,7 +196,7 @@ const TeamRow = ({
         />
         <span className="truncate">{team.name}</span>
       </div>
-      <div className="bg-white/20 text-white text-sm font-bold p-1 w-[24px]">
+      <div className="bg-white/20 text-white text-sm font-bold p-1 w-[30px]">
         {typeof score === "number" ? score : 0}
       </div>
     </div>

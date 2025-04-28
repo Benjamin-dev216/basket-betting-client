@@ -1,8 +1,7 @@
 export async function placeBet(payload: {
-  matchId: string;
-  marketId: string;
-  outcome: string;
-  stake: number;
+  marketId: string | number;
+  outcomeName: string;
+  odds: number | null;
 }) {
   const res = await fetch("/api/bet", {
     method: "POST",
