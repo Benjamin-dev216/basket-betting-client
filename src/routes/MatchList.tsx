@@ -3,6 +3,7 @@ import { useWebSocket } from "../context/WebSocketProvider";
 import { useEffect } from "react";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import { toast } from "react-toastify";
 
 interface Match {
   matchId: string;
@@ -41,13 +42,15 @@ const groupByCompetition = (matches: Match[]): GroupedMatches => {
 };
 
 const MatchList = () => {
-  const { matchList, selectMatch, setMatchList } = useWebSocket();
+  const { matchList, setSelectedMatch, setMatchList } = useWebSocket();
   const navigate = useNavigate();
   const groupedMatches = groupByCompetition(matchList);
 
   const handleSelect = (matchId: string) => {
-    selectMatch(matchId);
-    navigate("/market");
+    if (!localStorage.getItem("authToken"))
+      return toast("Please Login to continue");
+    setSelectedMatch(null);
+    navigate(`/${matchId}`);
   };
 
   useEffect(() => {
@@ -103,14 +106,17 @@ const MatchList = () => {
   return (
     <div className="p-4 space-y-6 w-full max-w-4xl mx-auto min-h-[calc(100vh-112px)]">
       {Object.keys(groupedMatches).length > 0 ? (
-        Object.entries(groupedMatches).map(([competition, matches]) => (
-          <CompetitionBlock
-            key={competition}
-            title={competition}
-            matches={matches}
-            onMatchClick={handleSelect}
-          />
-        ))
+        Object.entries(groupedMatches).map(([competition, matches]) => {
+          if (competition !== "NBA Futures 2024/25")
+            return (
+              <CompetitionBlock
+                key={competition}
+                title={competition}
+                matches={matches}
+                onMatchClick={handleSelect}
+              />
+            );
+        })
       ) : (
         <div className="text-center text-gray-400 py-10 min-h-[calc(100vh-112px)]">
           <ClipLoader color="white" size={50} /> {/* Spinner component */}

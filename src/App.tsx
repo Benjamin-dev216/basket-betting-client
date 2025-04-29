@@ -7,26 +7,29 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar";
 import "./App.css";
+import { AuthProvider } from "./context/AuthProvicer";
 
 const App = () => {
   return (
-    <WebSocketProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<MatchList />} />
-          <Route path="/market" element={<MarketPanel />} />
-          <Route path="/history" element={<History />} />
-        </Routes>
-      </Router>
-      <ToastContainer
-        position="top-center"
-        theme="dark"
-        closeOnClick
-        pauseOnHover
-        hideProgressBar={false}
-      />
-    </WebSocketProvider>
+    <AuthProvider>
+      <WebSocketProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<MatchList />} />
+            <Route path="/:matchId" element={<MarketPanel />} />
+            <Route path="/history" element={<History />} />
+          </Routes>
+        </Router>
+        <ToastContainer
+          position="top-center"
+          theme="dark"
+          closeOnClick
+          pauseOnHover
+          hideProgressBar={false}
+        />
+      </WebSocketProvider>
+    </AuthProvider>
   );
 };
 
