@@ -126,7 +126,6 @@ const MarketPanel = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(selectedMatch);
 
   return (
     <>

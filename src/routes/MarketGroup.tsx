@@ -3,6 +3,7 @@ import { Market, Team } from "../types/match";
 import { placeBet } from "../api/betting";
 import { marketName } from "../utils/marketName";
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthProvicer";
 
 type Props = {
   markets: Market[];
@@ -24,6 +25,8 @@ export const MarketGroup: React.FC<Props> = ({
   awayTeam,
   stop,
 }) => {
+  const { user } = useAuth();
+
   const [pendingBet, setPendingBet] = useState<PendingBet | null>(null);
   const [toastId, setToastId] = useState<string | number | null>(null);
   const [betAmount, setBetAmount] = useState<string>(""); // store amount input
@@ -77,7 +80,11 @@ export const MarketGroup: React.FC<Props> = ({
     const id = toast.loading("Waiting for odds confirmation...");
     setToastId(id);
 
-    const delay = 3000 + Math.random() * 2000;
+    const delay =
+      user?.pendingTime?.time1 * 1000 +
+      Math.random() *
+        (user?.pendingTime?.time2 - user?.pendingTime?.time1) *
+        1000;
 
     setTimeout(() => {
       const market = markets.find((m) => m.marketId === pendingBet.marketId);

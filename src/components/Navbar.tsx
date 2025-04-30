@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 export default function Navbar() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authData, setAuthdata] = useState({ email: "", password: "" });
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, user, login, logout } = useAuth();
   const navigate = useNavigate();
 
   const toggleAuthModal = () => {
@@ -40,6 +40,14 @@ export default function Navbar() {
         </div>
 
         <div className="w-full mt-4 flex justify-center md:mt-0 md:w-auto md:flex md:gap-6 text-sm font-medium text-gray-300">
+          {user && user.isAdmin && (
+            <Link
+              to="/admin"
+              className="hover:text-white transition px-2 my-auto"
+            >
+              Admin Panel
+            </Link>
+          )}
           <Link to="/" className="hover:text-white transition px-2 my-auto">
             Matches
           </Link>
@@ -54,7 +62,7 @@ export default function Navbar() {
           {!isAuthenticated ? (
             <button
               onClick={toggleAuthModal}
-              className="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black  px-5 py-2 rounded-md transition"
+              className="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black px-5 py-2 rounded-md transition"
             >
               Login
             </button>

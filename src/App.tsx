@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar";
 import "./App.css";
 import { AuthProvider } from "./context/AuthProvicer";
+import AdminPanel from "./routes/AdminPanel";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
             <Route path="/" element={<MatchList />} />
             <Route path="/:matchId" element={<MarketPanel />} />
             <Route path="/history" element={<History />} />
+            <Route path="/admin" element={<AdminPanel />} />
           </Routes>
         </Router>
         <ToastContainer

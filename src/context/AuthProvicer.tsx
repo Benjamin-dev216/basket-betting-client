@@ -19,14 +19,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Check if the user is authenticated based on token
   useEffect(() => {
     const token = localStorage.getItem("authToken");
+    const user = localStorage.getItem("user");
     if (token) {
       setIsAuthenticated(true);
-      // Optionally, fetch user info based on token
-      // axios
-      //   .get("/api/user", { headers: { Authorization: `Bearer ${token}` } })
-      //   .then((response) => setUser(response.data))
-      //   .catch(() => logout());
     }
+    if (user) setUser(user);
   }, []);
 
   // Handle login
@@ -37,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         password,
       });
       localStorage.setItem("authToken", response.data.token); // Save token
+      localStorage.setItem("user", response.data.user); // Save token
       setIsAuthenticated(true);
       setUser(response.data.user); // Assuming response contains user info
     } catch (error) {
@@ -47,6 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Handle logout
   const logout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setIsAuthenticated(false);
     setUser(null);
   };

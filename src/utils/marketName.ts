@@ -111,4 +111,12 @@ export const marketName = [
     id: 180069,
     name: "2nd Half Lines Money Line",
   },
+  {
+    id: 1446,
+    name: "Game Lines Spread",
+  },
+  {
+    id: 1450,
+    name: "Game Lines Total",
+  },
 ];
