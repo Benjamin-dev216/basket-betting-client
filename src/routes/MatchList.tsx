@@ -42,7 +42,8 @@ const groupByCompetition = (matches: Match[]): GroupedMatches => {
 };
 
 const MatchList = () => {
-  const { matchList, setSelectedMatch, setMatchList } = useWebSocket();
+  const { matchList, setSelectedMatch, selectMatch, setMatchList } =
+    useWebSocket();
   const navigate = useNavigate();
   const groupedMatches = groupByCompetition(matchList);
 
@@ -50,6 +51,7 @@ const MatchList = () => {
     if (!localStorage.getItem("authToken"))
       return toast("Please Login to continue");
     setSelectedMatch(null);
+    selectMatch(matchId);
     navigate(`/${matchId}`);
   };
 

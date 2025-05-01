@@ -10,6 +10,7 @@ type Props = {
   homeTeam: Team;
   awayTeam: Team;
   stop: number;
+  matchId: string;
 };
 type PendingBet = {
   marketId: string | number;
@@ -24,6 +25,7 @@ export const MarketGroup: React.FC<Props> = ({
   homeTeam,
   awayTeam,
   stop,
+  matchId,
 }) => {
   const { user } = useAuth();
 
@@ -81,9 +83,9 @@ export const MarketGroup: React.FC<Props> = ({
     setToastId(id);
 
     const delay =
-      user?.pendingTime?.time1 * 1000 +
+      Number(user?.pendingTime?.time1) * 1000 +
       Math.random() *
-        (user?.pendingTime?.time2 - user?.pendingTime?.time1) *
+        (Number(user?.pendingTime?.time2) - Number(user?.pendingTime?.time1)) *
         1000;
 
     setTimeout(() => {
@@ -105,6 +107,7 @@ export const MarketGroup: React.FC<Props> = ({
           outcomeName: pendingBet.outcomeName,
           odds: pendingBet.odds,
           amount: amountNumber, // 👈 pass amount
+          matchId: matchId,
         });
       } else {
         toast.update(id, {
@@ -306,5 +309,5 @@ const formatHandicap = (handicap?: string) => {
 
 const formatPrice = (price?: number | null) => {
   if (price === undefined || price === null) return "-";
-  return price > 0 ? `+${price.toFixed(2)}` : price.toFixed(2);
+  return price > 0 ? `x${price.toFixed(2)}` : price.toFixed(2);
 };

@@ -28,7 +28,10 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/live");
-    setSocket(ws);
+
+    ws.onopen = () => {
+      setSocket(ws);
+    };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);

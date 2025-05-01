@@ -9,7 +9,7 @@ import { normalizeScores } from "../utils/utils.functions";
 import { useParams } from "react-router-dom";
 
 const MarketPanel = () => {
-  const { selectedMatch, setSelectedMatch } = useWebSocket();
+  const { selectedMatch, setSelectedMatch, sendMessage } = useWebSocket();
   const { matchId } = useParams();
 
   function formatStats(statStr: string | undefined) {
@@ -125,6 +125,7 @@ const MarketPanel = () => {
   };
   useEffect(() => {
     fetchData();
+    // sendMessage({ type: "subscribe", matchId });
   }, []);
 
   return (
@@ -154,6 +155,7 @@ const MarketPanel = () => {
               awayTeam={selectedMatch.teams.away}
               markets={selectedMatch.odds}
               stop={0}
+              matchId={matchId || ""}
             />
           </div>
         </div>

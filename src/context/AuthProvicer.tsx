@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (token) {
       setIsAuthenticated(true);
     }
-    if (user) setUser(user);
+    if (user) setUser(JSON.parse(user));
   }, []);
 
   // Handle login
@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         password,
       });
       localStorage.setItem("authToken", response.data.token); // Save token
-      localStorage.setItem("user", response.data.user); // Save token
+      localStorage.setItem("user", JSON.stringify(response.data.user)); // Save token
       setIsAuthenticated(true);
       setUser(response.data.user); // Assuming response contains user info
     } catch (error) {

@@ -8,13 +8,10 @@ export async function placeBet(payload: {
   outcomeName: string;
   odds: number | null;
   amount?: number;
+  matchId: string;
 }) {
   try {
-    const { data } = await axiosInstance.post("/bet", payload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      },
-    });
+    const { data } = await axiosInstance.post("/bet", payload);
     return data;
   } catch (error: AxiosError | any) {
     toast.error(
