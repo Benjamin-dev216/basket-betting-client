@@ -83,19 +83,19 @@ const MarketPanel = () => {
 
                 if (patternSize > 0) {
                   const markets: any[] = [];
-
-                  markets.push({
-                    marketId: market.id,
-                    handicap: getMarketHandicap(market),
-                    outcomes: participants
-                      .slice(0, patternSize) // ONLY the first pattern group
-                      .map((p) => ({
-                        name: p.name,
-                        value: parseFloat(p.value_eu),
-                        liveValue: parseFloat(p.value_eu),
-                      })),
-                  });
-
+                  for (let i = 0; i < participants.length; i += patternSize) {
+                    markets.push({
+                      marketId: market.id,
+                      handicap: getMarketHandicap(market),
+                      outcomes: participants
+                        .slice(i, i + patternSize)
+                        .map((p) => ({
+                          name: p.name,
+                          value: parseFloat(p.value_eu),
+                          liveValue: parseFloat(p.value_eu),
+                        })),
+                    });
+                  }
                   return markets;
                 }
               }

@@ -10,6 +10,15 @@ export const fetchUser = async () => {
   }
 };
 
+export const fetchCurrentUser = async () => {
+  try {
+    const { data } = await axiosInstance.get("/user");
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const deleteUser = async (id: string) => {
   try {
     const { data } = await axiosInstance.delete(`/user/${id}`);

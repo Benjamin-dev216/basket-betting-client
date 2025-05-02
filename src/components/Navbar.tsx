@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useAuth } from "../context/AuthProvicer";
+import { useAuthStore } from "../store/authStore";
 import { AxiosError } from "axios";
 
 export default function Navbar() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authData, setAuthdata] = useState({ email: "", password: "" });
-  const { isAuthenticated, user, login, logout } = useAuth();
+  const { isAuthenticated, user, login, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const toggleAuthModal = () => {
@@ -59,23 +59,36 @@ export default function Navbar() {
           </Link>
 
           {/* Login Button */}
+          {/* Login Button */}
           {!isAuthenticated ? (
             <button
               onClick={toggleAuthModal}
-              className="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black px-5 py-2 rounded-md transition"
+              className="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black px-5 py-2 rounded-md transition font-semibold shadow-sm"
             >
               Login
             </button>
           ) : (
-            <button
-              onClick={() => {
-                logout();
-                navigate("/");
-              }}
-              className="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black  px-5 py-2 rounded-md transition"
-            >
-              Logout
-            </button>
+            <div className="flex items-center gap-3 ml-4">
+              {/* Balance display */}
+              {user && !user.isAdmin && (
+                <div className="text-white bg-gray-800 px-3 py-1 rounded-md text-sm font-medium shadow-inner">
+                  <span className="text-green-400">
+                    ${Number(user.balance)?.toFixed(2)}
+                  </span>
+                </div>
+              )}
+
+              {/* Logout button */}
+              <button
+                onClick={() => {
+                  logout();
+                  navigate("/");
+                }}
+                className="bg-yellow-400 hover:bg-yellow-500 text-black px-5 py-2 rounded-md transition font-semibold shadow-sm"
+              >
+                Logout
+              </button>
+            </div>
           )}
         </div>
       </nav>
