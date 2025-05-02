@@ -27,7 +27,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/live");
+    const ws = new WebSocket(import.meta.env.VITE_WS_URL);
 
     ws.onopen = () => {
       setSocket(ws);
