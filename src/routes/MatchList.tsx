@@ -57,51 +57,67 @@ const MatchList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get("/inplay-basket");
+      try {
+        const { data } = await axios.get("/inplay-basket");
 
-      const tempMatchList: Match[] = [];
-      const tempEvents = Object.values(data.events) as Array<{
-        info: { id: string; league: string; period: String };
-        status: string;
-        timer: string;
-        team_info: {
-          home: { name: string; kit_color?: string; score?: number };
-          away: { name: string; kit_color?: string; score?: number };
-        };
-        pc: number;
-      }>;
-      tempEvents.map((match) => {
-        const pc = !Number(match.info.period[0])
-          ? 5
-          : Number(match.info.period[0]);
-        const tempMatch = {
-          matchId: match.info.id,
-          competition: match.info.league,
-          status: match.status,
-          timer: match.timer,
-          teams: {
-            home: {
-              name: match.team_info.home.name,
-              kitColors: match.team_info.home.kit_color?.split(",") ?? [],
+        if (!data?.events) {
+          console.error("No events in data:", data);
+          return;
+        }
+
+        const tempMatchList: Match[] = [];
+
+        const tempEvents = Object.values(data.events) as Array<{
+          info: { id: string; league: string; period: String };
+          status: string;
+          timer: string;
+          team_info: {
+            home: { name: string; kit_color?: string; score?: number };
+            away: { name: string; kit_color?: string; score?: number };
+          };
+          pc: number;
+        }>;
+
+        tempEvents.forEach((match) => {
+          const pc = !Number(match.info.period[0])
+            ? 5
+            : Number(match.info.period[0]);
+
+          const tempMatch = {
+            matchId: match.info.id,
+            competition: match.info.league,
+            status: match.status,
+            timer: match.timer,
+            teams: {
+              home: {
+                name: match.team_info.home.name,
+                kitColors: match.team_info.home.kit_color?.split(",") ?? [],
+              },
+              away: {
+                name: match.team_info.away.name,
+                kitColors: match.team_info.away.kit_color?.split(",") ?? [],
+              },
             },
-            away: {
-              name: match.team_info.away.name,
-              kitColors: match.team_info.away.kit_color?.split(",") ?? [],
+            pc: pc,
+            numericStats: {
+              T: [
+                Number(match.team_info.home.score) ?? 0,
+                Number(match.team_info.away.score) ?? 0,
+              ] as [number, number],
             },
-          },
-          pc: pc,
-          numericStats: {
-            T: [
-              Number(match.team_info.home.score) ?? 0,
-              Number(match.team_info.away.score) ?? 0,
-            ] as [number, number],
-          },
-          stp: 0, // Default value for stp
-        };
-        tempMatchList.push(tempMatch);
-      });
-      setMatchList(tempMatchList);
+            stp: 0,
+          };
+
+          tempMatchList.push(tempMatch);
+        });
+
+        setMatchList(tempMatchList);
+      } catch (err) {
+        console.error("Failed to fetch match data", err);
+        toast.error("Failed to load match list");
+      }
     };
+
     fetchData();
   }, []);
 
