@@ -4,6 +4,7 @@ import { placeBet } from "../api/betting";
 import { marketName } from "../utils/marketName";
 import { toast } from "react-toastify";
 import { useAuthStore } from "../store/authStore";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   markets: Market[];
@@ -27,6 +28,8 @@ export const MarketGroup: React.FC<Props> = ({
   stop,
   matchId,
 }) => {
+  const { t } = useTranslation();
+
   const { user, updateUser } = useAuthStore();
 
   const [pendingBet, setPendingBet] = useState<PendingBet | null>(null);
@@ -37,17 +40,17 @@ export const MarketGroup: React.FC<Props> = ({
     const found = marketName.find(
       (m) => m.id.toString() === marketId.toString()
     );
-    return found?.name; // returns undefined if not found
+    return found?.translationKey; // instead of `name`
   };
 
   // Group by market name (skip unknowns)
   const marketGroups = markets.reduce(
     (acc: Record<string, Market[]>, market) => {
-      const name = getMarketName(market.marketId);
-      if (!name) return acc; // skip unknown market
+      const key = getMarketName(market.marketId);
+      if (!key) return acc;
 
-      if (!acc[name]) acc[name] = [];
-      acc[name].push(market);
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(market);
       return acc;
     },
     {}
@@ -70,7 +73,7 @@ export const MarketGroup: React.FC<Props> = ({
 
     const amountNumber = parseFloat(betAmount);
     if (isNaN(amountNumber) || amountNumber <= 0) {
-      toast.error("Please enter a valid amount");
+      toast.error(t("marketGroup.please_enter_valid_amount"));
       return;
     }
 
@@ -78,7 +81,7 @@ export const MarketGroup: React.FC<Props> = ({
 
     // start normal bet confirmation flow
 
-    const id = toast.loading("Waiting for odds confirmation...");
+    const id = toast.loading(t("marketGroup.waiting_for_odds"));
 
     const delay =
       Number(user?.pendingTime?.time1) * 1000 +
@@ -93,27 +96,31 @@ export const MarketGroup: React.FC<Props> = ({
       );
       if (outcome && outcome.liveValue === pendingBet.odds) {
         toast.update(id, {
-          render: "✅ Bet confirmed!",
+          render: t("marketGroup.bet_confirmed"),
           type: "success",
           isLoading: false,
           autoClose: 2000,
         });
         setPendingBet(null);
-        await placeBet({
-          marketId: pendingBet.marketId,
-          handicap: market?.handicap || null,
-          outcomeName: pendingBet.outcomeName,
-          odds: pendingBet.odds,
-          amount: amountNumber, // 👈 pass amount
-          matchId: matchId,
-        });
+        try {
+          await placeBet({
+            marketId: pendingBet.marketId,
+            handicap: market?.handicap || null,
+            outcomeName: pendingBet.outcomeName,
+            odds: pendingBet.odds,
+            amount: amountNumber, // 👈 pass amount
+            matchId: matchId,
+          });
+        } catch (error) {
+          toast.error(t("marketGroup.insufficient_balance"));
+        }
         updateUser({
           ...user,
           balance: (Number(user.balance) - Number(amountNumber)).toString(),
         });
       } else {
         toast.update(id, {
-          render: "❌ Bet cancelled. Odds changed.",
+          render: t("marketGroup.bet_cancelled"),
           type: "error",
           isLoading: false,
           autoClose: 3000,
@@ -127,24 +134,26 @@ export const MarketGroup: React.FC<Props> = ({
     <>
       <div className="space-y-6">
         {marketName
-          .filter((m) => marketGroups[m.name]) // only include known groups
-          .map(({ name: groupName }) => {
-            const groupMarkets = marketGroups[groupName];
-            const isGrouped = groupMarkets.length > 1; // Only group if duplicate market names
+          .filter((m) => marketGroups[m.translationKey])
+          .map(({ translationKey }) => {
+            const groupMarkets = marketGroups[translationKey];
+            const isGrouped = groupMarkets.length > 1;
+
             return (
               <div
-                key={groupName}
+                key={translationKey}
                 className="bg-[#2f2f2f] rounded-lg overflow-hidden shadow text-white"
               >
-                {/* Group Title */}
                 <div className="bg-[#3a3a3a] text-sm font-semibold p-3">
-                  {groupName}
+                  {t(translationKey)}
                 </div>
 
                 {/* Header */}
                 {isGrouped && (
                   <div className="grid grid-cols-3 bg-[#292929] text-xs text-gray-400 py-2 px-3">
-                    <div className="text-center">Handicap</div>
+                    <div className="text-center">
+                      {t("marketGroup.handicap")}
+                    </div>
                     <div className="text-center">{homeTeam.name}</div>
                     <div className="text-center">{awayTeam.name}</div>
                   </div>
@@ -246,7 +255,18 @@ export const MarketGroup: React.FC<Props> = ({
                                 )
                               }
                             >
-                              {outcome.name} <br />
+                              <>
+                                {["under", "over", "home", "away"].includes(
+                                  outcome.name.toLowerCase()
+                                )
+                                  ? t(
+                                      "betting_history."
+                                        .concat(outcome.name)
+                                        .toLowerCase()
+                                    )
+                                  : outcome.name}{" "}
+                              </>
+                              <br />
                               <span className="text-white">
                                 {outcome.liveValue === undefined ||
                                 outcome.liveValue === null ? (
@@ -270,11 +290,11 @@ export const MarketGroup: React.FC<Props> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="bg-[#2f2f2f] rounded-lg p-4 w-[250px] shadow-lg border border-[#444] space-y-3">
             <h2 className="text-white text-base font-semibold text-center">
-              Bet Amount
+              {t("marketGroup.bet_amount")}
             </h2>
             <input
               type="number"
-              placeholder="Amount"
+              placeholder={t("marketGroup.amount")}
               value={betAmount}
               onChange={(e) => setBetAmount(e.target.value)}
               className="w-full p-2 rounded bg-[#3a3a3a] text-white text-left"
@@ -288,13 +308,13 @@ export const MarketGroup: React.FC<Props> = ({
                   setPendingBet(null);
                 }}
               >
-                Cancel
+                {t("marketGroup.cancel")}
               </button>
               <button
                 className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black p-1 rounded text-sm"
                 onClick={confirmBet}
               >
-                Confirm
+                {t("marketGroup.confirm")}
               </button>
             </div>
           </div>

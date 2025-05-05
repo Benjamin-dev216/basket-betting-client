@@ -1,128 +1,26 @@
 export const marketName = [
-  {
-    id: 2021,
-    name: "Home Team Total (Including OT)",
-  },
-  {
-    id: 2022,
-    name: "Away Team Total (Including OT)",
-  },
-  {
-    id: 163,
-    name: "Home Team Total Points",
-  },
-  {
-    id: 164,
-    name: "Away Team Total Points",
-  },
-  {
-    id: 1446,
-    name: "Game Lines Spread",
-  },
-  {
-    id: 1450,
-    name: "Game Lines Total",
-  },
-  {
-    id: 180079,
-    name: "1st Quarter Lines Spread",
-  },
-  {
-    id: 180080,
-    name: "1st Quarter Lines Total",
-  },
-  {
-    id: 759,
-    name: "Home Team Total (1st Quarter)",
-  },
-  {
-    id: 760,
-    name: "Away Team Total (1st Quarter)",
-  },
-  {
-    id: 180077,
-    name: "1st Quarter Lines Money Line",
-  },
-  {
-    id: 180078,
-    name: "1st Quarter Lines Money Line",
-  },
-  // {
-  //   id: 180086,
-  //   name: "2nd Quarter Lines Money Line",
-  // },
-  // {
-  //   id: 180087,
-  //   name: "2nd Quarter Lines Money Line",
-  // },
-
-  {
-    id: 180753,
-    name: "1st Half Spread",
-  },
-  {
-    id: 180062,
-    name: "1st Half Total",
-  },
-  {
-    id: 584,
-    name: "1st Half Home Totals",
-  },
-  {
-    id: 768,
-    name: "1st Half Away Totals",
-  },
-  {
-    id: 180060,
-    name: "1st Half Money Line",
-  },
-  {
-    id: 180097,
-    name: "3rd Quarter Lines Spread",
-  },
-  {
-    id: 18098,
-    name: "3rd Quarter Lines Total",
-  },
-  {
-    id: 533,
-    name: "Home Team Total (3rd Quarter)",
-  },
-  {
-    id: 764,
-    name: "Away Team Total (3rd Quarter)",
-  },
-
-  {
-    id: 180095,
-    name: "3rd Quarter Lines Money Line",
-  },
-  {
-    id: 180096,
-    name: "3rd Quarter Lines Money Line",
-  },
-  {
-    id: 180104,
-    name: "4th Quarter Lines Money Line",
-  },
-  // {
-  //   id: 765,
-  //   name: "Home Team Total (4th Quarter)",
-  // },
-  // {
-  //   id: 766,
-  //   name: "Away Team Total (4th Quarter)",
-  // },
-  // {
-  //   id: 769,
-  //   name: "Home Team Total (2nd Half)",
-  // },
-  // {
-  //   id: 770,
-  //   name: "Away Team Total (2nd Half)",
-  // },
-  // {
-  //   id: 180069,
-  //   name: "2nd Half Lines Money Line",
-  // },
+  { id: 1446, translationKey: "market.game_lines_spread" },
+  { id: 1450, translationKey: "market.game_lines_total" },
+  { id: 163, translationKey: "market.home_team_total_points" },
+  { id: 164, translationKey: "market.away_team_total_points" },
+  { id: 2021, translationKey: "market.home_team_total_incl_ot" },
+  { id: 2022, translationKey: "market.away_team_total_incl_ot" },
+  { id: 180079, translationKey: "market.q1_lines_spread" },
+  { id: 180080, translationKey: "market.q1_lines_total" },
+  { id: 759, translationKey: "market.q1_home_total" },
+  { id: 760, translationKey: "market.q1_away_total" },
+  { id: 180077, translationKey: "market.q1_moneyline" },
+  { id: 180078, translationKey: "market.q1_moneyline" },
+  { id: 180753, translationKey: "market.h1_spread" },
+  { id: 180062, translationKey: "market.h1_total" },
+  { id: 584, translationKey: "market.h1_home_total" },
+  { id: 768, translationKey: "market.h1_away_total" },
+  { id: 180060, translationKey: "market.h1_moneyline" },
+  { id: 180097, translationKey: "market.q3_lines_spread" },
+  { id: 18098, translationKey: "market.q3_lines_total" },
+  { id: 533, translationKey: "market.q3_home_total" },
+  { id: 764, translationKey: "market.q3_away_total" },
+  { id: 180095, translationKey: "market.q3_moneyline" },
+  { id: 180096, translationKey: "market.q3_moneyline" },
+  { id: 180104, translationKey: "market.q4_moneyline" },
 ];

@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import { useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { useTranslatedLocations } from "../hooks/useTranslatedLocations";
 
 interface Match {
   matchId: string;
@@ -42,6 +45,9 @@ const groupByCompetition = (matches: Match[]): GroupedMatches => {
 };
 
 const MatchList = () => {
+  const didFetch = useRef(false);
+  const { t } = useTranslation();
+
   const { matchList, setSelectedMatch, selectMatch, setMatchList } =
     useWebSocket();
   const navigate = useNavigate();
@@ -56,6 +62,9 @@ const MatchList = () => {
   };
 
   useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
+
     const fetchData = async () => {
       try {
         const { data } = await axios.get("/inplay-basket");
@@ -113,7 +122,6 @@ const MatchList = () => {
 
         setMatchList(tempMatchList);
       } catch (err) {
-        console.error("Failed to fetch match data", err);
         toast.error("Failed to load match list");
       }
     };
@@ -138,7 +146,7 @@ const MatchList = () => {
       ) : (
         <div className="text-center text-gray-400 py-10 min-h-[calc(100vh-112px)]">
           <ClipLoader color="white" size={50} /> {/* Spinner component */}
-          <p className="text-lg mt-4">Loading Matches...</p>
+          <p className="text-lg mt-4">{t("matchList.loading_matches")}</p>
         </div>
       )}
     </div>
@@ -153,22 +161,26 @@ const CompetitionBlock = ({
   title: string;
   matches: Match[];
   onMatchClick: (matchId: string) => void;
-}) => (
-  <div>
-    <div className="bg-[#4c4c4c] text-white font-bold px-4 py-2 rounded-t-md uppercase tracking-wide text-sm shadow ">
-      {title}
+}) => {
+  const { translateLocations } = useTranslatedLocations();
+
+  return (
+    <div>
+      <div className="bg-[#4c4c4c] text-white font-bold px-4 py-2 rounded-t-md uppercase tracking-wide text-sm shadow ">
+        {translateLocations(title)}
+      </div>
+      <div className="space-y-1">
+        {matches.map((match) => (
+          <MatchCard
+            key={match.matchId}
+            match={match}
+            onClick={() => onMatchClick(match.matchId)}
+          />
+        ))}
+      </div>
     </div>
-    <div className="space-y-1">
-      {matches.map((match) => (
-        <MatchCard
-          key={match.matchId}
-          match={match}
-          onClick={() => onMatchClick(match.matchId)}
-        />
-      ))}
-    </div>
-  </div>
-);
+  );
+};
 
 const MatchCard = ({
   match,
@@ -211,6 +223,7 @@ const TeamRow = ({
   score?: number;
 }) => {
   const primaryColor = team.kitColors?.[0]?.toString() || "#666";
+  const { translateLocations } = useTranslatedLocations();
   return (
     <div className="flex justify-between items-center pr-6">
       <div className="flex items-center gap-2 min-w-0">
@@ -218,7 +231,7 @@ const TeamRow = ({
           className="w-3 h-5 rounded-sm"
           style={{ backgroundColor: primaryColor }}
         />
-        <span className="truncate">{team.name}</span>
+        <span className="truncate"> {translateLocations(team.name)}</span>
       </div>
       <div className="bg-white/20 text-white text-sm font-bold p-1 w-[30px]">
         {typeof score === "number" ? score : 0}

@@ -4,6 +4,7 @@ import AdminModal from "../components/AdminModal";
 import UserForm from "../components/UserForm";
 import { addUser, deleteUser, fetchUser, updateUser } from "../api/user";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 export interface User {
   id: string;
@@ -15,6 +16,7 @@ export interface User {
 }
 
 const AdminPanel: React.FC = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -65,7 +67,9 @@ const AdminPanel: React.FC = () => {
   return (
     <div className="p-6 min-h-[calc(100vh-112px)]">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
+        <h1 className="text-2xl font-bold text-white">
+          {t("adminPanel.title")}
+        </h1>
         <button
           onClick={() => {
             setSelectedUser(null);
@@ -73,19 +77,23 @@ const AdminPanel: React.FC = () => {
           }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg"
         >
-          + New User
+          + {t("adminPanel.newUser")}
         </button>
       </div>
 
       <table className="w-full text-sm border border-[#6e6358] rounded-md overflow-hidden table-fixed">
         <thead className="bg-[#5a5149] text-[#f1e7d0]">
           <tr>
-            <th className="p-3 text-center w-1/5">Email</th>
-            <th className="p-3 text-center w-1/6">Balance</th>
-            <th className="p-3 text-center w-1/6">Pending 1</th>
-            <th className="p-3 text-center w-1/6">Pending 2</th>
-            <th className="p-3 text-center w-1/6">Role</th>
-            <th className="p-3 text-center w-1/6">Actions</th>
+            <th className="p-3 text-center w-1/5">{t("adminPanel.email")}</th>
+            <th className="p-3 text-center w-1/6">{t("adminPanel.balance")}</th>
+            <th className="p-3 text-center w-1/6">
+              {t("adminPanel.pending1")}
+            </th>
+            <th className="p-3 text-center w-1/6">
+              {t("adminPanel.pending2")}
+            </th>
+            <th className="p-3 text-center w-1/6">{t("adminPanel.role")}</th>
+            <th className="p-3 text-center w-1/6">{t("adminPanel.actions")}</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-[#6e6358]">
@@ -104,13 +112,13 @@ const AdminPanel: React.FC = () => {
                   onClick={() => handleEdit(user)}
                   className="text-orange-400 hover:underline mr-2"
                 >
-                  Edit
+                  {t("adminPanel.edit")}
                 </button>
                 <button
                   onClick={() => handleDeleteClick(user)}
                   className="text-red-400 hover:underline"
                 >
-                  Delete
+                  {t("adminPanel.delete")}
                 </button>
               </td>
             </tr>
@@ -125,12 +133,15 @@ const AdminPanel: React.FC = () => {
           onCancel={() => setModalOpen(false)}
         />
       </AdminModal>
+
       {confirmOpen && userToDelete && (
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
           <div className="bg-[#2f2b28] text-white p-6 rounded-xl shadow-2xl border border-gray-600 w-80">
-            <h2 className="text-lg font-semibold mb-4">Confirm Delete</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              {t("adminPanel.confirmDelete")}
+            </h2>
             <p className="mb-4">
-              Are you sure you want to delete{" "}
+              {t("adminPanel.confirmDeleteMessage")}{" "}
               <strong>{userToDelete.email}</strong>?
             </p>
             <div className="flex justify-end space-x-4">
@@ -138,7 +149,7 @@ const AdminPanel: React.FC = () => {
                 className="px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded"
                 onClick={() => setConfirmOpen(false)}
               >
-                Cancel
+                {t("adminPanel.cancel")}
               </button>
               <button
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded"
@@ -147,7 +158,7 @@ const AdminPanel: React.FC = () => {
                   setConfirmOpen(false);
                 }}
               >
-                Delete
+                {t("adminPanel.delete")}
               </button>
             </div>
           </div>

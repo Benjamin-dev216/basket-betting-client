@@ -1,5 +1,6 @@
 import React from "react";
 import { ScoreFormat } from "../types/match";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   homeTeamName: string;
@@ -18,6 +19,8 @@ export const GameStatePanel: React.FC<Props> = ({
   statsParsed,
   score,
 }) => {
+  const { t } = useTranslation();
+
   const parseScore = (scoreString?: string) => {
     if (!scoreString) return { home: "0", away: "0" };
     const parts = scoreString.split(":").map((s) => s.trim());
@@ -68,14 +71,21 @@ export const GameStatePanel: React.FC<Props> = ({
       {/* Team Stats Section */}
       <div className="space-y-3">
         {["Fouls", "2 Pts", "3 Pts"].map((stat) => {
+          // Parse the score for each stat
           const { home, away } = parseScore(statsParsed[stat] || "0:0");
+
+          // Determine the translation key based on the stat name
+          const statKey =
+            stat === "Fouls" ? "fouls" : stat.toLowerCase().replace(" ", "_");
+
           return (
             <div
               key={stat}
               className="grid grid-cols-3 items-center text-center"
             >
               <div className="text-sm">{home}</div>
-              <div className="text-xs text-gray-400">{stat}</div>
+              <div className="text-xs text-gray-400">{t(statKey)}</div>{" "}
+              {/* Use translation key */}
               <div className="text-sm">{away}</div>
             </div>
           );
@@ -96,7 +106,7 @@ export const GameStatePanel: React.FC<Props> = ({
                 />
               ))}
           </div>
-          <div className="text-xs text-gray-400">Time Outs</div>
+          <div className="text-xs text-gray-400">{t("timeOuts")}</div>
           <div className="flex justify-center">
             {Array(
               parseInt(parseScore(statsParsed["Time Outs#T.O"]).away || "0", 10)
@@ -125,7 +135,7 @@ export const GameStatePanel: React.FC<Props> = ({
               %
             </span>
           </div>
-          <div className="text-xs text-gray-400">Free Throws</div>
+          <div className="text-xs text-gray-400">{t("freeThrows")}</div>
           <div className="flex items-center justify-center gap-1">
             <span className="text-sm">
               {parseScore(statsParsed["Ft"]).away}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   user: any;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const UserForm: React.FC<Props> = ({ user, onSave, onCancel }) => {
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     id: "",
     email: "",
@@ -21,7 +23,9 @@ const UserForm: React.FC<Props> = ({ user, onSave, onCancel }) => {
     if (user) setForm(user);
   }, [user]);
 
-  const handleChange = (e: any) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
@@ -36,67 +40,73 @@ const UserForm: React.FC<Props> = ({ user, onSave, onCancel }) => {
     >
       <input
         name="email"
-        placeholder="Email"
+        placeholder={t("userForm.emailPlaceholder")}
         value={form.email}
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded-lg"
       />
+
       {!user && (
         <input
           name="password"
           type="password"
-          placeholder="Password"
+          placeholder={t("userForm.passwordPlaceholder")}
           value={form.password}
           onChange={handleChange}
           className="w-full px-4 py-2 border rounded-lg"
         />
       )}
+
       <select
         name="role"
         value={form.role}
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded-lg"
       >
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
+        <option value="user">{t("userForm.roleUser")}</option>
+        <option value="admin">{t("userForm.roleAdmin")}</option>
       </select>
+
       <input
         name="balance"
         type="number"
-        placeholder="Balance"
+        placeholder={t("userForm.balancePlaceholder")}
         value={form.balance}
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded-lg"
       />
+
       <input
         name="pendingTime1"
         type="number"
-        placeholder="Pending Time 1"
+        placeholder={t("userForm.pendingTime1Placeholder")}
         value={form.pendingTime1}
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded-lg"
       />
+
       <input
         name="pendingTime2"
         type="number"
-        placeholder="Pending Time 2"
+        placeholder={t("userForm.pendingTime2Placeholder")}
         value={form.pendingTime2}
         onChange={handleChange}
         className="w-full px-4 py-2 border rounded-lg"
       />
+
       <div className="flex justify-end gap-2">
         <button
           type="button"
           onClick={onCancel}
           className="px-4 py-2 bg-gray-300 rounded-lg"
         >
-          Cancel
+          {t("userForm.cancelButton")}
         </button>
         <button
           type="submit"
           className="px-4 py-2 bg-green-600 text-white rounded-lg"
         >
-          Save
+          {t("userForm.saveButton")}
         </button>
       </div>
     </form>

@@ -41,7 +41,7 @@ export default function Navbar() {
             className="h-12 w-12 md:h-20 md:w-20 object-contain"
           />
           <span className="text-white font-bold text-2xl md:text-[28px]">
-            BasketBet
+            {t("brand")}
           </span>
         </div>
 
@@ -51,7 +51,7 @@ export default function Navbar() {
               to="/admin"
               className="hover:text-white transition px-2 my-auto"
             >
-              Admin Panel
+              {t("adminPanel.title")}
             </Link>
           )}
           <Link to="/" className="hover:text-white transition px-2 my-auto">
@@ -115,7 +115,7 @@ export default function Navbar() {
             <div>
               <input
                 type="text"
-                placeholder="Email"
+                placeholder={t("emailPlaceholder")}
                 className="w-full p-3 rounded bg-[#3a3a3a] text-white text-sm mb-4"
                 onChange={(e) => {
                   setAuthdata({ ...authData, email: e.target.value });
@@ -125,7 +125,7 @@ export default function Navbar() {
             <div>
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t("passwordPlaceholder")}
                 className="w-full p-3 rounded bg-[#3a3a3a] text-white text-sm mb-4"
                 onChange={(e) => {
                   setAuthdata({ ...authData, password: e.target.value });

@@ -7,8 +7,11 @@ import { ClipLoader } from "react-spinners";
 import { GameStatePanel } from "./GameStatePanel";
 import { normalizeScores } from "../utils/utils.functions";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const MarketPanel = () => {
+  const { t } = useTranslation();
+
   const { selectedMatch, setSelectedMatch } = useWebSocket();
   const { matchId } = useParams();
 
@@ -160,9 +163,9 @@ const MarketPanel = () => {
           </div>
         </div>
       ) : (
-        <div className="text-center text-gray-400 py-10 min-h-[calc(100vh-112px)]">
-          <ClipLoader color="white" size={50} /> {/* Spinner component */}
-          <p className="text-lg mt-4">Loading Market...</p>
+        <div className=" text-gray-400 py-10 min-h-[calc(100vh-112px)]">
+          <ClipLoader color="white" size={50} aria-label="Loading spinner" />
+          <p className="text-lg mt-4">{t("marketGroup.loading_market")}</p>
         </div>
       )}
     </>
