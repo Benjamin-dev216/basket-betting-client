@@ -61,7 +61,6 @@ const MatchList = () => {
         const { data } = await axios.get("/inplay-basket");
 
         if (!data?.events) {
-          console.error("No events in data:", data);
           return;
         }
 
