@@ -118,7 +118,7 @@ const AdminPanel: React.FC = () => {
         </tbody>
       </table>
 
-      <AdminModal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+      <AdminModal isOpen={modalOpen}>
         <UserForm
           user={selectedUser}
           onSave={handleSave}
