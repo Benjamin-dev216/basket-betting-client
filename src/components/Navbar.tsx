@@ -3,12 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuthStore } from "../store/authStore";
 import { AxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 
 export default function Navbar() {
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authData, setAuthdata] = useState({ email: "", password: "" });
+  const { t, i18n } = useTranslation();
+
   const { isAuthenticated, user, login, logout } = useAuthStore();
   const navigate = useNavigate();
+
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authData, setAuthdata] = useState({ email: "", password: "" });
 
   const toggleAuthModal = () => {
     setShowAuthModal(!showAuthModal);
@@ -28,6 +32,8 @@ export default function Navbar() {
   return (
     <>
       <nav className="flex flex-wrap items-center justify-between bg-[#1f1f1f] p-4 shadow-md px-6 md:px-16">
+        {/* <button onClick={() => i18n.changeLanguage("en")}>🇺🇸</button>
+        <button onClick={() => i18n.changeLanguage("zh")}>🇨🇳</button> */}
         <div className="flex items-center gap-3">
           <img
             src="/basket.png"
@@ -49,13 +55,13 @@ export default function Navbar() {
             </Link>
           )}
           <Link to="/" className="hover:text-white transition px-2 my-auto">
-            Matches
+            {t("matches")}
           </Link>
           <Link
             to="/history"
             className="hover:text-white transition px-2 my-auto"
           >
-            History
+            {t("history")}
           </Link>
 
           {/* Login Button */}
@@ -65,7 +71,7 @@ export default function Navbar() {
               onClick={toggleAuthModal}
               className="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black px-5 py-2 rounded-md transition font-semibold shadow-sm"
             >
-              Login
+              {t("login")}
             </button>
           ) : (
             <div className="flex items-center gap-3 ml-4">
@@ -86,7 +92,7 @@ export default function Navbar() {
                 }}
                 className="bg-yellow-400 hover:bg-yellow-500 text-black px-5 py-2 rounded-md transition font-semibold shadow-sm"
               >
-                Logout
+                {t("logout")}
               </button>
             </div>
           )}
@@ -102,7 +108,7 @@ export default function Navbar() {
       {showAuthModal && (
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-[#2f2f2f] p-8 rounded-lg w-[400px] shadow-lg border border-[#444] space-y-6">
           <h2 className="text-white text-xl font-semibold text-center">
-            Login
+            {t("login")}
           </h2>
 
           <form>
@@ -132,7 +138,7 @@ export default function Navbar() {
                 onClick={toggleAuthModal}
                 className="bg-gray-600 text-white p-2 w-1/2 rounded cursor-pointer hover:bg-gray-700 transition"
               >
-                Cancel
+                {t("cancel")}
               </button>
               <button
                 className="bg-yellow-400 text-black p-2 w-1/2 rounded cursor-pointer hover:bg-yellow-500 transition"
@@ -141,7 +147,7 @@ export default function Navbar() {
                   onLogin();
                 }}
               >
-                Login
+                {t("login")}
               </button>
             </div>
           </form>
