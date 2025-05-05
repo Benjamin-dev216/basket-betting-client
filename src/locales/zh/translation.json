@@ -297,5 +297,9 @@
     "Yemen": "也门",
     "Zambia": "赞比亚",
     "Zimbabwe": "津巴布韦"
+  },
+  "toast": {
+    "login_required": "请登录以继续",
+    "load_matches_failed": "加载比赛列表失败"
   }
 }

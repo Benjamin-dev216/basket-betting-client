@@ -55,7 +55,7 @@ const MatchList = () => {
 
   const handleSelect = (matchId: string) => {
     if (!localStorage.getItem("authToken"))
-      return toast("Please Login to continue");
+      return toast(t("toast.login_required"));
     setSelectedMatch(null);
     selectMatch(matchId);
     navigate(`/${matchId}`);
@@ -122,7 +122,7 @@ const MatchList = () => {
 
         setMatchList(tempMatchList);
       } catch (err) {
-        toast.error("Failed to load match list");
+        toast.error(t("toast.load_matches_failed"));
       }
     };
 

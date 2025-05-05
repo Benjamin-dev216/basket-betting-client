@@ -301,5 +301,9 @@
     "Yemen": "Yemen",
     "Zambia": "Zambia",
     "Zimbabwe": "Zimbabwe"
+  },
+  "toast": {
+    "login_required": "Please login to continue",
+    "load_matches_failed": "Failed to load match list"
   }
 }
