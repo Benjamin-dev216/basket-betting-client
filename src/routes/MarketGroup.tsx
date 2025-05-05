@@ -30,7 +30,6 @@ export const MarketGroup: React.FC<Props> = ({
   const { user, updateUser } = useAuthStore();
 
   const [pendingBet, setPendingBet] = useState<PendingBet | null>(null);
-  const [toastId, setToastId] = useState<string | number | null>(null);
   const [betAmount, setBetAmount] = useState<string>(""); // store amount input
   const [showAmountModal, setShowAmountModal] = useState(false); // control modal
 
@@ -80,7 +79,6 @@ export const MarketGroup: React.FC<Props> = ({
     // start normal bet confirmation flow
 
     const id = toast.loading("Waiting for odds confirmation...");
-    setToastId(id);
 
     const delay =
       Number(user?.pendingTime?.time1) * 1000 +

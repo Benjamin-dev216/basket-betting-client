@@ -2,15 +2,10 @@ import React from "react";
 
 type AdminModalProps = {
   isOpen: boolean;
-  onClose: () => void;
   children: React.ReactNode;
 };
 
-const AdminModal: React.FC<AdminModalProps> = ({
-  isOpen,
-  onClose,
-  children,
-}) => {
+const AdminModal: React.FC<AdminModalProps> = ({ isOpen, children }) => {
   if (!isOpen) return null;
 
   return (

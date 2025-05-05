@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { useTranslation } from "react-i18next";
 
 export default function Navbar() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { isAuthenticated, user, login, logout } = useAuthStore();
   const navigate = useNavigate();
